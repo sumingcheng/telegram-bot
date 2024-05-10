@@ -35,11 +35,13 @@ def send_files(update: Update, context: CallbackContext) -> None:
         logging.error(f"Error reading the folder: {e}")
 
 
-def send_file_to_channel(file_path: str, filename: str, context: CallbackContext, update: Update) -> None:
+def send_file_to_channel(file_path: str, filename: str, context, update):
     try:
-        document = InputFile(file_path)
-        caption = f'文件名: {filename}'
-        context.bot.send_document(chat_id=CHANNEL_ID, document=document, caption=caption)
+        # 正确打开文件
+        with open(file_path, 'rb') as file:
+            document = InputFile(file)
+            caption = f'文件名: {filename}'
+            context.bot.send_document(chat_id=CHANNEL_ID, document=document, caption=caption)
         update.message.reply_text(f'文件 {filename} 已成功上传到频道。')
     except Exception as e:
         update.message.reply_text(f'发送文件 {filename} 时出现错误。')
@@ -62,7 +64,6 @@ def delete_files(update: Update, context: CallbackContext) -> None:
     except Exception as e:
         update.message.reply_text('删除文件时出现错误。')
         logging.error(f"Error deleting files: {e}")
-
 
 
 def main() -> None:
