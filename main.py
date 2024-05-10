@@ -50,16 +50,19 @@ def delete_files(update: Update, context: CallbackContext) -> None:
     bot = context.bot
     chat_id = CHANNEL_ID
     try:
-        # 尝试获取频道中的最新100条消息
+        # 获取机器人有权限查看的最新100条消息
         updates = bot.get_updates(limit=100)
-        for update in updates:
-            if update.message and update.message.document:
-                # 如果消息包含文档，则删除该消息
-                bot.delete_message(chat_id=chat_id, message_id=update.message.message_id)
-        update.message.reply_text('频道中的所有文件已被删除。')
+        # 遍历更新中的消息
+        message_ids = [upd.message.message_id for upd in updates if upd.message.chat_id == chat_id and upd.message.from_user.is_bot]
+        print("频道消息", message_ids)
+        for message_id in message_ids:
+            # 删除消息
+            bot.delete_message(chat_id=chat_id, message_id=message_id)
+        update.message.reply_text('尽可能删除了机器人发送的消息。')
     except Exception as e:
         update.message.reply_text('删除文件时出现错误。')
         logging.error(f"Error deleting files: {e}")
+
 
 
 def main() -> None:

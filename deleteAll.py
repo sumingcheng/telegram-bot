@@ -2,19 +2,20 @@ import os
 import logging
 from telethon import TelegramClient
 import asyncio
-import configparser
+from dotenv import load_dotenv
 
 # 初始化日志
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
 
+# 加载 .env 文件中的环境变量
+load_dotenv()
+
 
 def load_config():
-    """加载配置文件，返回API相关参数"""
-    config = configparser.ConfigParser()
-    config.read('config.ini')
-    api_id = int(config['TELEGRAM']['API_ID'])
-    api_hash = config['TELEGRAM']['API_HASH']
-    bot_token = config['TELEGRAM']['BOT_TOKEN']
+    """从环境变量加载API相关参数"""
+    api_id = int(os.getenv('API_ID'))
+    api_hash = os.getenv('API_HASH')
+    bot_token = os.getenv('BOT_TOKEN')
     return api_id, api_hash, bot_token
 
 
@@ -26,22 +27,20 @@ def create_telegram_client(api_id, api_hash, bot_token):
 
 
 async def delete_files(client, channel_id):
-    """删除指定频道中所有带有文件的消息"""
+    """删除指定频道中所有消息"""
     async for message in client.iter_messages(channel_id, limit=None):
-        if message.file:
-            try:
-                logging.info(f'Deleting message {message.id} with file {message.file.name}')
-                await message.delete()
-            except Exception as e:
-                logging.error(f'Failed to delete message {message.id}: {e}')
-                continue
+        try:
+            logging.info(f'Deleting message {message.id}')
+            await message.delete()
+        except Exception as e:
+            logging.error(f'Failed to delete message {message.id}: {e}')
 
 
 async def main():
     """程序主入口，执行删除操作"""
     api_id, api_hash, bot_token = load_config()
     client = create_telegram_client(api_id, api_hash, bot_token)
-    channel_id = 'your_channel_id'  # 应从安全来源获取
+    channel_id = os.getenv('CHANNEL_ID')  # 从环境变量中获取频道ID
     await delete_files(client, channel_id)
 
 
