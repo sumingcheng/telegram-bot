@@ -1,6 +1,10 @@
 from telegram import Update, InputFile
 from telegram.ext import Updater, CommandHandler, CallbackContext
 import os
+from dotenv import load_dotenv
+
+# 加载.env文件
+load_dotenv()
 
 
 def start(update: Update, context: CallbackContext) -> None:
@@ -8,8 +12,8 @@ def start(update: Update, context: CallbackContext) -> None:
 
 
 def send_files(update: Update, context: CallbackContext) -> None:
-  folder_path = 'path/to/your/folder'
-  channel_id = '@your_channel_name'
+  folder_path = os.getenv('FOLDER_PATH')
+  channel_id = os.getenv('CHANNEL_ID')
 
   for filename in os.listdir(folder_path):
     file_path = os.path.join(folder_path, filename)
@@ -25,7 +29,7 @@ def send_files(update: Update, context: CallbackContext) -> None:
 
 
 def delete_files(update: Update, context: CallbackContext) -> None:
-  channel_id = '@your_channel_name'
+  channel_id = os.getenv('CHANNEL_ID')
   bot = context.bot
   try:
     for message in bot.iter_chat_messages(channel_id):
@@ -38,7 +42,7 @@ def delete_files(update: Update, context: CallbackContext) -> None:
 
 
 def main() -> None:
-  updater = Updater("TOKEN", use_context=True)
+  updater = Updater(os.getenv('TOKEN'), use_context=True)
 
   dp = updater.dispatcher
   dp.add_handler(CommandHandler("start", start))
