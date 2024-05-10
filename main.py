@@ -8,17 +8,13 @@ def start(update: Update, context: CallbackContext) -> None:
 
 
 def send_files(update: Update, context: CallbackContext) -> None:
-  # 指定文件夹路径
   folder_path = 'path/to/your/folder'
-  # 指定频道ID或用户名
   channel_id = '@your_channel_name'
 
-  # 遍历文件夹中的所有文件
   for filename in os.listdir(folder_path):
     file_path = os.path.join(folder_path, filename)
     if os.path.isfile(file_path):
       try:
-        # 读取文件并发送到频道
         document = InputFile(file_path)
         caption = f'文件名: {filename}'
         context.bot.send_document(chat_id=channel_id, document=document, caption=caption)
@@ -28,15 +24,27 @@ def send_files(update: Update, context: CallbackContext) -> None:
         print(f"Error: {e}")
 
 
+def delete_files(update: Update, context: CallbackContext) -> None:
+  channel_id = '@your_channel_name'
+  bot = context.bot
+  try:
+    for message in bot.iter_chat_messages(channel_id):
+      if message.document:
+        bot.delete_message(chat_id=channel_id, message_id=message.message_id)
+    update.message.reply_text('频道中的所有文件已被删除。')
+  except Exception as e:
+    update.message.reply_text('删除文件时出现错误。')
+    print(f"Error: {e}")
+
+
 def main() -> None:
-  # 替换'TOKEN'为你的机器人的Token
   updater = Updater("TOKEN", use_context=True)
 
   dp = updater.dispatcher
   dp.add_handler(CommandHandler("start", start))
   dp.add_handler(CommandHandler("sendfiles", send_files))
+  dp.add_handler(CommandHandler("deletefiles", delete_files))
 
-  # 启动机器人
   updater.start_polling()
   updater.idle()
 
