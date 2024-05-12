@@ -14,9 +14,7 @@
 
 使用以下命令安装所需的库：
 
-```
-bash
-Copy code
+```bash
 pip install telethon python-telegram-bot
 ```
 
@@ -35,8 +33,8 @@ pip install telethon python-telegram-bot
 
 通过 Python 直接运行相应的脚本文件：
 
-```
-bashCopy codepython deleteAll.py
+```bash
+python deleteAll.py
 python uploadTheFile.py
 python proxyTesting.py
 ```
