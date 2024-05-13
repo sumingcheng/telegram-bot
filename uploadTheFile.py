@@ -5,6 +5,7 @@ import os
 import logging
 from dotenv import load_dotenv
 import sqlite3
+import time
 
 # 配置日志记录
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -51,7 +52,7 @@ def save_uploaded_file(filename):
 def start(update: Update, context: CallbackContext) -> None:
     """处理/start命令，发送欢迎信息。"""
     update.message.reply_text('😀欢迎使用本机器人！发送 /sendfiles 可以上传文件。')
-    logger.info(f"User {update.effective_user.id} started the bot.")
+    logger.info("用户 {} 启动了机器人。".format(update.effective_user.id))
 
 
 def send_files(update: Update, context: CallbackContext) -> None:
@@ -62,39 +63,38 @@ def send_files(update: Update, context: CallbackContext) -> None:
 
     for filename in files:
         file_path = os.path.join(FOLDER_PATH, filename)
-        if os.path.isfile(file_path) and not is_uploaded(filename):
-            if send_file_to_channel(file_path, filename, context, update):
-                uploaded_count += 1
-                save_uploaded_file(filename)  # 保存已上传的文件名
-            update.message.reply_text(f'已成功上传 {uploaded_count} / {total_files} 个文件。')
+        if os.path.isfile(file_path):
+            if not is_uploaded(filename):
+                if send_file_to_channel(file_path, filename, context, update, initial_delay=10):
+                    uploaded_count += 1
+                    save_uploaded_file(filename)  # 保存已上传的文件名
+                    update.message.reply_text(f'已成功上传 {uploaded_count} / {total_files} 个文件。')
+            else:
+                uploaded_count += 1  # 仅计数，不发送重复消息
 
 
-import time
-
-
-def send_file_to_channel(file_path: str, filename: str, context, update):
-    """发送单个文件到频道，并返回上传状态。"""
+def send_file_to_channel(file_path: str, filename: str, context, update, initial_delay):
+    """发送单个文件到频道，并根据需要重试。"""
     try:
         with open(file_path, 'rb') as file:
             document = InputFile(file)
             caption = f'文件名: {filename}'
-            context.bot.send_document(chat_id=CHANNEL_ID, document=document, caption=caption)
-        logger.info(f"File {filename} sent successfully to channel {CHANNEL_ID}.")
-        time.sleep(1)  # 简单示例，每次发送后暂停1秒
+            context.bot.send_document(chat_id=CHANNEL_ID, document=document, caption=caption, timeout=60)
+        logger.info("文件 {} 成功发送到频道 {}。".format(filename, CHANNEL_ID))
         return True
     except telegram.error.RetryAfter as e:
-        logger.warning(f"Reached rate limit, need to wait {e.retry_after} seconds")
+        logger.warning("达到速率限制，需要等待 {} 秒。".format(e.retry_after))
         time.sleep(e.retry_after)
-        return send_file_to_channel(file_path, filename, context, update)  # 重试发送
+        return send_file_to_channel(file_path, filename, context, update, initial_delay)
     except Exception as e:
-        logger.error(f"发送文件 {filename} 时出现错误: {e}")
-        update.message.reply_text(f'发送文件 {filename} 时出现错误。')
-        return False
+        logger.error("发送文件 {} 时出现错误: {}".format(filename, str(e)))
+        time.sleep(initial_delay)
+        return send_file_to_channel(file_path, filename, context, update, initial_delay + 10)
 
 
 def main() -> None:
     """主函数，配置并启动 Telegram bot。"""
-    logger.info("Starting bot...")
+    logger.info("机器人启动中...")
     init_db()  # 初始化数据库
     request_kwargs = {
         'proxy_url': 'http://127.0.0.1:7890',  # 示例代理地址
@@ -107,9 +107,9 @@ def main() -> None:
     dp.add_handler(CommandHandler("sendfiles", send_files))
 
     updater.start_polling()
-    logger.info("Bot started and polling initiated.")
+    logger.info("机器人已启动并开始轮询。")
     updater.idle()
-    logger.info("Bot stopped.")
+    logger.info("机器人已停止。")
 
 
 if __name__ == '__main__':
