@@ -499,7 +499,7 @@
     <routine id="190" parent="1" name="fts5"/>
     <schema id="191" parent="1" name="main">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2024-05-11.12:05:22</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-05-13.13:14:56</LastIntrospectionLocalTimestamp>
     </schema>
     <argument id="192" parent="16">
       <ArgumentDirection>R</ArgumentDirection>
@@ -1590,152 +1590,28 @@
     <argument id="554" parent="190">
       <Position>1</Position>
     </argument>
-    <table id="555" parent="191" name="entities"/>
-    <table id="556" parent="191" name="sent_files"/>
-    <table id="557" parent="191" name="sessions"/>
-    <table id="558" parent="191" name="sqlite_master">
+    <table id="555" parent="191" name="sqlite_master">
       <System>1</System>
     </table>
-    <table id="559" parent="191" name="update_state"/>
-    <table id="560" parent="191" name="version"/>
-    <column id="561" parent="555" name="id">
-      <DasType>integer|0s</DasType>
-      <Position>1</Position>
-    </column>
-    <column id="562" parent="555" name="hash">
-      <DasType>integer|0s</DasType>
-      <NotNull>1</NotNull>
-      <Position>2</Position>
-    </column>
-    <column id="563" parent="555" name="username">
-      <DasType>text|0s</DasType>
-      <Position>3</Position>
-    </column>
-    <column id="564" parent="555" name="phone">
-      <DasType>integer|0s</DasType>
-      <Position>4</Position>
-    </column>
-    <column id="565" parent="555" name="name">
-      <DasType>text|0s</DasType>
-      <Position>5</Position>
-    </column>
-    <column id="566" parent="555" name="date">
-      <DasType>integer|0s</DasType>
-      <Position>6</Position>
-    </column>
-    <key id="567" parent="555">
-      <ColNames>id</ColNames>
-      <Primary>1</Primary>
-    </key>
-    <column id="568" parent="556" name="md5_digest">
-      <DasType>blob|0s</DasType>
-      <Position>1</Position>
-    </column>
-    <column id="569" parent="556" name="file_size">
-      <DasType>integer|0s</DasType>
-      <Position>2</Position>
-    </column>
-    <column id="570" parent="556" name="type">
-      <DasType>integer|0s</DasType>
-      <Position>3</Position>
-    </column>
-    <column id="571" parent="556" name="id">
-      <DasType>integer|0s</DasType>
-      <Position>4</Position>
-    </column>
-    <column id="572" parent="556" name="hash">
-      <DasType>integer|0s</DasType>
-      <Position>5</Position>
-    </column>
-    <index id="573" parent="556" name="sqlite_autoindex_sent_files_1">
-      <ColNames>md5_digest
-file_size
-type</ColNames>
-      <NameSurrogate>1</NameSurrogate>
-      <Unique>1</Unique>
-    </index>
-    <key id="574" parent="556">
-      <ColNames>md5_digest
-file_size
-type</ColNames>
-      <Primary>1</Primary>
-      <UnderlyingIndexName>sqlite_autoindex_sent_files_1</UnderlyingIndexName>
-    </key>
-    <column id="575" parent="557" name="dc_id">
-      <DasType>integer|0s</DasType>
-      <Position>1</Position>
-    </column>
-    <column id="576" parent="557" name="server_address">
-      <DasType>text|0s</DasType>
-      <Position>2</Position>
-    </column>
-    <column id="577" parent="557" name="port">
-      <DasType>integer|0s</DasType>
-      <Position>3</Position>
-    </column>
-    <column id="578" parent="557" name="auth_key">
-      <DasType>blob|0s</DasType>
-      <Position>4</Position>
-    </column>
-    <column id="579" parent="557" name="takeout_id">
-      <DasType>integer|0s</DasType>
-      <Position>5</Position>
-    </column>
-    <key id="580" parent="557">
-      <ColNames>dc_id</ColNames>
-      <Primary>1</Primary>
-    </key>
-    <column id="581" parent="558" name="type">
+    <column id="556" parent="555" name="type">
       <DasType>TEXT|0s</DasType>
       <Position>1</Position>
     </column>
-    <column id="582" parent="558" name="name">
+    <column id="557" parent="555" name="name">
       <DasType>TEXT|0s</DasType>
       <Position>2</Position>
     </column>
-    <column id="583" parent="558" name="tbl_name">
+    <column id="558" parent="555" name="tbl_name">
       <DasType>TEXT|0s</DasType>
       <Position>3</Position>
     </column>
-    <column id="584" parent="558" name="rootpage">
+    <column id="559" parent="555" name="rootpage">
       <DasType>INT|0s</DasType>
       <Position>4</Position>
     </column>
-    <column id="585" parent="558" name="sql">
+    <column id="560" parent="555" name="sql">
       <DasType>TEXT|0s</DasType>
       <Position>5</Position>
     </column>
-    <column id="586" parent="559" name="id">
-      <DasType>integer|0s</DasType>
-      <Position>1</Position>
-    </column>
-    <column id="587" parent="559" name="pts">
-      <DasType>integer|0s</DasType>
-      <Position>2</Position>
-    </column>
-    <column id="588" parent="559" name="qts">
-      <DasType>integer|0s</DasType>
-      <Position>3</Position>
-    </column>
-    <column id="589" parent="559" name="date">
-      <DasType>integer|0s</DasType>
-      <Position>4</Position>
-    </column>
-    <column id="590" parent="559" name="seq">
-      <DasType>integer|0s</DasType>
-      <Position>5</Position>
-    </column>
-    <key id="591" parent="559">
-      <ColNames>id</ColNames>
-      <Primary>1</Primary>
-    </key>
-    <column id="592" parent="560" name="version">
-      <DasType>integer|0s</DasType>
-      <Position>1</Position>
-    </column>
-    <key id="593" parent="560">
-      <ColNames>version</ColNames>
-      <Primary>1</Primary>
-    </key>
   </database-model>
 </dataSource>
